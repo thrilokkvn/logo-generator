@@ -7,7 +7,6 @@ import { LandingPageCreateLogo } from "@/components/LandingPageCreateLogo";
 export default function Home() {
   return (
     <div className="min-h-screen">
-      <Header />
       <Hero />
       <Features />
       <HowItWorks />

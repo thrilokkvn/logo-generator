@@ -3,8 +3,11 @@
 import { ArrowRight, Sparkles, Zap } from "lucide-react"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
+import { useRouter } from "next/navigation"
 
 export const Hero = () => {
+    const router = useRouter();
+
     return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted pt-20 sm:pt-0">
       <div className="absolute inset-0 overflow-hidden">
@@ -32,11 +35,11 @@ export const Hero = () => {
 
         <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed">
           Transform your brand vision into professional logos with our cutting-edge AI technology. 
-          No design skills required – just describe your idea and watch magic happen.
+          No design skills required - just describe your idea and watch magic happen.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 sm:mb-12">
-          <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto">
+          <Button onClick={() => router.push("/generate")} size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto">
             Start Creating Free
             <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
           </Button>

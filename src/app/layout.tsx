@@ -3,6 +3,7 @@ import { Host_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 
 const host_grotesk = Host_Grotesk({
   subsets: ["latin"]
@@ -24,6 +25,7 @@ export default function RootLayout({
         <body
           className={`${host_grotesk.className}`}
         >
+          <Header />
           {children}
           <Footer />
         </body>
