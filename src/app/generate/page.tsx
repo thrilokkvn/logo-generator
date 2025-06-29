@@ -6,13 +6,13 @@ import { InputBar } from "@/components/Inputbar";
 import { SelectElement } from "@/components/SelectElement";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { industries, logoStyles } from "@/config/config";
 import { logoDetails } from "@/types";
-import { ArrowLeft, BadgeCheck, Layers, Palette, Text } from "lucide-react";
+import { ArrowLeft, Layers, Palette, Text } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import axios from "axios";
 
 const initialState = {
     title: "",
@@ -27,6 +27,7 @@ const initialState = {
 export default function GenerateLogo() {
     const [logoDetails, setLogoDetails] = useState<logoDetails>(initialState);
     const router = useRouter();
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const name = e.target.name;
@@ -35,6 +36,29 @@ export default function GenerateLogo() {
             [name]: e.target.value,
         }));
     };
+
+    const handleGenerateLogo = async() => {
+        const response = await axios.post("http://localhost:3000/api/generate-logo", 
+            logoDetails, 
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                responseType: 'blob'
+        });
+
+        if (response.status < 200 || response.status > 299) {
+            console.log("error");
+            return;
+        }
+
+        console.log(response.data)
+        console.log(response.data instanceof Blob)
+
+        const imageBlob = response.data;
+        const url = URL.createObjectURL(imageBlob);
+        setImageUrl(url);
+    }
 
     console.log(logoDetails)
 
@@ -119,6 +143,10 @@ export default function GenerateLogo() {
                         </div>
                     </div>
                 </div>
+                <div className="my-5 flex justify-center">
+                    <Button onClick={handleGenerateLogo}>Generate Logo</Button>
+                </div>
+                {imageUrl && <img src={imageUrl} alt="generated-logo"/>}
             </div>
         </div>
     );
