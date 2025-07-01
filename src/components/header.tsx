@@ -2,12 +2,18 @@
 
 import { Menu, Zap } from "lucide-react";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 import { usePathname, useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import axios from "axios";
+import { toast } from "sonner";
+import { User } from "@supabase/supabase-js";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [user, setUser] = useState<User | null>(null)
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -17,6 +23,31 @@ export const Header = () => {
     };
     const router = useRouter();
     const pathname = usePathname();
+
+    const getSession = async () => {
+        try {
+            const response = await axios.get("http://localhost:3000/api/auth/session");
+            setUser(response.data.user);
+            console.log(response)
+        }catch (e: any) {
+            toast.error(e.message);
+        }
+    }
+
+    useEffect(() => {
+        getSession();
+    }, []);
+
+    const handleLogout = async() => {
+        try {
+            const response = await axios.post("http://localhost:3000/api/auth/logout");
+            toast.success("Logout Successful")
+        } catch (e) {
+            toast.error("Logout failed");
+        }
+
+        getSession();
+    }
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -51,14 +82,33 @@ export const Header = () => {
 
                     <div className="hidden md:flex items-center space-x-4">
                         <ThemeToggle />
-                        <Button
-                            variant="ghost"
-                            className="text-foreground hover:text-primary">
-                            Sign In
-                        </Button>
-                        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-6">
-                            Get Started
-                        </Button>
+                        {user === null && <div className="flex space-x-4">
+                            <Button onClick={() => router.push("/auth")}
+                                variant="ghost"
+                                className="text-foreground hover:text-primary">
+                                Sign In
+                            </Button>
+                            <Button onClick={() => router.push("/generate")} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-6">
+                                Get Started
+                            </Button>
+                        </div>} 
+                        {user && 
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="cursor-pointer">
+                                <Avatar className="outline-none focus-visible:ring-none">
+                                    <AvatarImage className="outline-none focus-visible:ring-none" src="https://github.com/shadcn.png" />
+                                    <AvatarFallback>{user.user_metadata.first_name[0].toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">Dashboard</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-400">Logout</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>}
                     </div>
 
                     <div className="md:hidden flex items-center space-x-2">

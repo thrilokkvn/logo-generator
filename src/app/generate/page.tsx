@@ -64,7 +64,7 @@ export default function GenerateLogo() {
 
     return (
         <div className="mt-16 min-h-screen px-10 md:px-20 white:bg-muted">
-            <Button variant={"ghost"} onClick={() => router.push("/")}>
+            <Button className="mt-4" variant={"ghost"} onClick={() => router.push("/")}>
                 <ArrowLeft /> Back to Home
             </Button>
             <div className="px-10 mt-5">

@@ -2,6 +2,8 @@ import { genAI } from "@/config/genAI";
 import { NextResponse } from "next/server";
 import { HarmBlockThreshold, HarmCategory, Part } from "@google/generative-ai"
 import { GenerateContentResponse, Modality } from "@google/genai";
+import { supabaseServer } from "@/config/supabaseServer";
+import { cookies } from "next/headers";
 
 function extractImageFromResponse(response: GenerateContentResponse) {
     let imageData: string | undefined;
@@ -60,16 +62,17 @@ export async function POST(req: Request) {
         4.  **If "Include Brand Name in Logo" is "Yes"**:
             * Immediately after the opening, add: "The brand name '${title}' is incorporated with [suggest appropriate typography style, e.g., sleek sans-serif, elegant serif, bold modern] typography."
             * Specify a typography style that complements the 'Logo Style'.
-        5.  **If "Include Icons in Logo" is "Yes"**:
+        5.  **DO NOT** include the industry name in the logo
+        6.  **If "Include Icons in Logo" is "Yes"**:
             * Add a description of a specific, relevant, and visually appropriate icon based on the 'Industry' and 'Brand Description'. Be creative but relevant. For example: "The design features a stylized abstract representation of interconnected data nodes." or "The design features an elegant intertwining of a leaf and water droplet."
             * If "Include Brand Name in Logo" is also "Yes", ensure the icon complements the typography.
-        6.  **If "Include Icons in Logo" is "No"**:
+        7.  **If "Include Icons in Logo" is "No"**:
             * Add a phrase like: "The design focuses on [abstract shapes or typography] without illustrative icons."
-        7.  **Color Palette Application**:
+        8.  **Color Palette Application**:
             * Add: "The color palette is [clearly state the chosen or specified color palette, including HEX codes if provided in the rules above]."
-        8.  **Overall Feel**:
+        9.  **Overall Feel**:
             * Add: "The overall feel is [suggest appropriate emotion/vibe, e.g., innovative, serene, vibrant, trustworthy, luxurious, sophisticated]."
-        9.  **Background**:
+        10.  **Background**:
             * Conclude the prompt with: "Minimalist vector on a transparent background."
 
         **GENERATE THE IMAGE GENERATION PROMPT NOW:**
@@ -117,7 +120,30 @@ export async function POST(req: Request) {
             console.log("No image found")
         }
 
+        const token = (await cookies()).get("sb-access-token")?.value;
+        const {data:user, error: userError} = await supabaseServer.auth.getUser(token);
+
         const imageBuffer = Buffer.from(imageData as string, 'base64');
+        const filename = `${title}-${industry}-${Math.random()}`;
+
+        const {data, error} = await supabaseServer.storage.from("logos").upload(`/public/${filename}`, imageBuffer, {
+            contentType: mimeType || 'image/jpeg',
+            upsert: true
+        });
+
+        if (error) return Response.json({ error: error.message }, { status: 500 });
+
+        const {data: insertData, error: insertError} = await supabaseServer.from("logos").insert({
+            id: data.id,
+            user_id: user.user?.id,
+            title,
+            industry,
+            created_at: new Date().toISOString(),
+            logo_url: `${process.env.SUPABASE_URL}/storage/v1/object/public/logos/public${filename}`
+        })
+
+        console.log(data);
+        if (insertError) return Response.json({ error: insertError.message }, { status: 500 });
 
         return new NextResponse(imageBuffer, {
             headers: {
