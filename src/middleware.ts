@@ -21,6 +21,8 @@ export const config = {
   matcher: [
     "/generate",
     "/generate/:path*",     
+    "/logos",
+    "/logos/:path",
     "/api/generate-logo/:path*",
     "/api/logout",
   ],

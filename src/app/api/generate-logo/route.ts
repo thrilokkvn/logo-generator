@@ -139,7 +139,8 @@ export async function POST(req: Request) {
             title,
             industry,
             created_at: new Date().toISOString(),
-            logo_url: `${process.env.SUPABASE_URL}/storage/v1/object/public/logos/public${filename}`
+            logo_url: `${process.env.SUPABASE_URL}/storage/v1/object/public/logos/public${filename}`,
+            logo_style: logoStyle
         })
 
         console.log(data);

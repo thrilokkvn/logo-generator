@@ -14,3 +14,12 @@ export interface logoDetails {
     includeBrandOrText: boolean,
     includeIcons: boolean
 }
+
+export interface logoDisplayType {
+    id: string,
+    title: string,
+    industry: string,
+    createdAt: Date,
+    logoUrl: string,
+    logoStyle: string   
+}

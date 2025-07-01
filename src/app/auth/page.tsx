@@ -9,7 +9,7 @@ import { authData } from "@/types";
 import axios from "axios";
 import { Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { BeatLoader } from "react-spinners"
 
@@ -25,6 +25,20 @@ export default function Auth() {
     const [formData, setFormData] = useState<authData>(defaultAuthData);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+      const getSession = async() => {
+        const response = await axios.get("http://localhost:3000/api/auth/session");
+        const data = response.data;
+
+        if (data.user !== null) {
+          router.replace("/");
+          toast.warning("User already signed in...");
+        }
+      }
+
+      getSession();
+    }, [])
 
     const handleSubmit = async(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

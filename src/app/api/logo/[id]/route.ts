@@ -2,7 +2,7 @@ import { supabaseServer } from "@/config/supabaseServer";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request, {params}: {params: {id: string}}) {
+export async function GET({params}: {params: {id: string}}) {
     const {id} = params;
     const token = (await cookies()).get("sb-access-token")?.value;
     const {data: user, error: userError} = await supabaseServer.auth.getUser(token);

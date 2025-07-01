@@ -40,8 +40,9 @@ export const Header = () => {
 
     const handleLogout = async() => {
         try {
-            const response = await axios.post("http://localhost:3000/api/auth/logout");
-            toast.success("Logout Successful")
+            await axios.post("http://localhost:3000/api/auth/logout");
+            toast.success("Logout Successful");
+            router.replace("/");
         } catch (e) {
             toast.error("Logout failed");
         }
@@ -51,7 +52,7 @@ export const Header = () => {
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div onClick={() => router.push("/")} className="flex items-center space-x-2 cursor-pointer">
                         <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
@@ -77,6 +78,11 @@ export const Header = () => {
                             onClick={() => scrollToSection("examples")}
                             className="text-foreground hover:text-primary font-medium transition-colors">
                             Examples
+                        </Button>
+                        <Button variant={"ghost"}
+                            onClick={() => router.push("/logos")}
+                            className="text-foreground hover:text-primary font-medium transition-colors">
+                            My Logos
                         </Button>
                     </nav>}
 
@@ -136,6 +142,11 @@ export const Header = () => {
                                 onClick={() => scrollToSection("examples")}
                                 className="text-foreground hover:text-primary font-medium text-left">
                                 Examples
+                            </button>
+                            <button
+                                onClick={() => router.push("/logos")}
+                                className="text-foreground hover:text-primary font-medium text-left">
+                                My Logos
                             </button>
                             <div className="flex flex-col space-y-2 pt-4 border-t border-border">
                                 <Button
