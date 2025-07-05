@@ -5,13 +5,13 @@ export async function middleware(req: NextRequest) {
     const token = req.cookies.get("sb-access-token")?.value;
 
     if(!token) {
-        return NextResponse.redirect(new URL("/auth", req.url));
+        return NextResponse.redirect(new URL("/auth?message=login-required", req.url));
     }
 
     const { data: { user }, error } = await supabaseServer.auth.getUser(token);
 
     if (!user || error) {
-        return NextResponse.redirect(new URL("/login", req.url));
+        return NextResponse.redirect(new URL("/auth?message=login-required", req.url));
     }
 
     return NextResponse.next();

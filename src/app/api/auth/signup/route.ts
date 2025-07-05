@@ -29,8 +29,6 @@ export async function POST(req: Request) {
         }
     });
 
-    console.log(data);
-    console.log(error)
 
     if (error || !data.user) {
         return NextResponse.json({ error: error?.message || "Signup failed" }, { status: 400 });

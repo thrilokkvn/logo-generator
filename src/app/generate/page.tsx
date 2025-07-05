@@ -13,6 +13,8 @@ import { ArrowLeft, Layers, Palette, Text } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "sonner";
+import { MultiStepLoader } from "@/components/ui/multi-step-loader";
 
 const initialState = {
     title: "",
@@ -26,8 +28,8 @@ const initialState = {
 
 export default function GenerateLogo() {
     const [logoDetails, setLogoDetails] = useState<logoDetails>(initialState);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const name = e.target.name;
@@ -38,116 +40,142 @@ export default function GenerateLogo() {
     };
 
     const handleGenerateLogo = async() => {
-        const response = await axios.post("http://localhost:3000/api/generate-logo", 
-            logoDetails, 
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                responseType: 'blob'
-        });
+        //zod validations
 
-        if (response.status < 200 || response.status > 299) {
-            console.log("error");
-            return;
+        try {
+            setLoading(true);
+            const response = await axios.post("http://localhost:3000/api/generate-logo", 
+                logoDetails, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+            });
+
+            if (response.status < 200 || response.status > 299) {
+                toast.error("Error generating logo")
+                return;
+            }
+
+            const id = response.data.id;
+            toast.success("Logo Generated Successfully")
+            router.push(`/logos/${id}`);
+        } catch (e) {
+            toast.error("Error Generating Logo...")
+        } finally {
+            setLoading(false);
         }
-
-        console.log(response.data)
-        console.log(response.data instanceof Blob)
-
-        const imageBlob = response.data;
-        const url = URL.createObjectURL(imageBlob);
-        setImageUrl(url);
     }
 
-    console.log(logoDetails)
+    const loadingStates = [{
+            text: "Analyzing your input",
+        },{
+            text: "Conceptualizing the logo design",
+        },{
+            text: "Generating your logo",
+        },{
+            text: "Refining the design and applying colors",
+        },{
+            text: "Adding final touches",
+        },
+    ];
 
-    return (
-        <div className="mt-16 min-h-screen px-10 md:px-20 white:bg-muted">
-            <Button className="mt-4" variant={"ghost"} onClick={() => router.push("/")}>
-                <ArrowLeft /> Back to Home
-            </Button>
-            <div className="px-10 mt-5">
-                <h1 className="font-bold text-xl md:text-3xl text-foreground">
-                    Create your Logo
-                </h1>
-                <p className="font-semibold text-lg text-muted-foreground mt-1">
-                    Tell us about your brand and we'll create the perfect logo for you
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-                    <div className="p-5 border border-gray-600 border-1 rounded-md">
-                        <div className="flex items-center gap-2">
-                            <Text />{" "}
-                            <span className="font-semibold text-xl">Basic Information</span>
-                        </div>
-                        <p className="text-muted-foreground">
-                            Tell us about your brand and vision
-                        </p>
-                        <div>
-                            <InputBar
-                                id="brand-title"
-                                title="Brand/ Company Name"
-                                name="title"
-                                placeholder="Enter your brand name"
-                                type="text"
-                                onChange={handleInputChange}
-                                value={logoDetails.title}
-                            />
-                            <CustomTextarea
-                                id="brand-description"
-                                title="Brand Description"
-                                name="description"
-                                placeholder="Describe what your brand does, your values, and what you want to convey"
-                                onChange={handleInputChange}
-                                value={logoDetails.description}
-                            />
-                            <p className="text-muted-foreground text-sm">
-                                Be specific about your brand's personality and target audience
-                            </p>
-                            <SelectElement value={logoDetails.industry} setLogoDetails={setLogoDetails} label="Industry" placeholder="Select your Industry" arrayelements={industries} name="industry"/>
 
-                            <Separator className="mt-5 mb-3"/>
-                            <div className="flex items-center gap-2">
-                                <Layers />
-                                <span className="font-semibold text-xl">Logo Preferences</span>
-                            </div>
-
-                            <div className="flex items-start space-x-3 space-y-0 mt-3">
-                                <Checkbox onCheckedChange={() => {setLogoDetails(prev => ({...prev, includeBrandOrText: !prev.includeBrandOrText}))}}/>
-                                <div className="space-y-1 leading-none">
-                                    <h2 className="font-semibold">Include Text/Company Name</h2>
-                                    <p className="text-sm text-muted-foreground">Include your brand name in the logo design</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start space-x-3 space-y-0 mt-3">
-                                <Checkbox onCheckedChange={() => {setLogoDetails(prev => ({...prev, includeIcons: !prev.includeIcons}))}}/>
-                                <div className="space-y-1 leading-none">
-                                    <h2 className="font-semibold">Include Icon/Symbol</h2>
-                                    <p className="text-sm text-muted-foreground">Include a graphic element or icon in the logo</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="p-5 border border-gray-600 border-1 rounded-md">
-                        <div className="flex items-center gap-2">
-                            <Palette />{" "}
-                            <span className="font-semibold text-xl">Design Preferences</span>
-                        </div>
-                        <p className="text-muted-foreground">
-                            Choose the visual style for your logo
-                        </p>
-                        <div>
-                            <SelectElement value={logoDetails.logoStyle} setLogoDetails={setLogoDetails} label="Logo Style" placeholder="Select a Logo Style" arrayelements={logoStyles} name="logoStyle"/>
-                            <ColorPalette setLogoDetails={setLogoDetails} name="colorPalette" value={logoDetails.colorPalette}/>
-                        </div>
-                    </div>
-                </div>
-                <div className="my-5 flex justify-center">
-                    <Button onClick={handleGenerateLogo}>Generate Logo</Button>
-                </div>
-                {imageUrl && <img src={imageUrl} alt="generated-logo"/>}
+    if (loading) {
+        return (
+            <div className="w-full h-[60vh] flex items-center justify-center">
+                <MultiStepLoader loadingStates={loadingStates} duration={2000} loading={loading}/>
             </div>
-        </div>
-    );
+        )
+    }
+
+    if (!loading) {
+        return (
+            <div className="mt-16 min-h-screen px-10 md:px-20 white:bg-muted">
+                <Button className="mt-4" variant={"ghost"} onClick={() => router.push("/")}>
+                    <ArrowLeft /> Back to Home
+                </Button>
+                <div className="px-10 mt-5">
+                    <h1 className="font-bold text-xl md:text-3xl text-foreground">
+                        Create your Logo
+                    </h1>
+                    <p className="font-semibold text-lg text-muted-foreground mt-1">
+                        Tell us about your brand and we'll create the perfect logo for you
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                        <div className="p-5 border border-gray-600 border-1 rounded-md">
+                            <div className="flex items-center gap-2">
+                                <Text />{" "}
+                                <span className="font-semibold text-xl">Basic Information</span>
+                            </div>
+                            <p className="text-muted-foreground">
+                                Tell us about your brand and vision
+                            </p>
+                            <div>
+                                <InputBar
+                                    id="brand-title"
+                                    title="Brand/ Company Name"
+                                    name="title"
+                                    placeholder="Enter your brand name"
+                                    type="text"
+                                    onChange={handleInputChange}
+                                    value={logoDetails.title}
+                                />
+                                <CustomTextarea
+                                    id="brand-description"
+                                    title="Brand Description"
+                                    name="description"
+                                    placeholder="Describe what your brand does, your values, and what you want to convey"
+                                    onChange={handleInputChange}
+                                    value={logoDetails.description}
+                                />
+                                <p className="text-muted-foreground text-sm">
+                                    Be specific about your brand's personality and target audience
+                                </p>
+                                <SelectElement value={logoDetails.industry} setLogoDetails={setLogoDetails} label="Industry" placeholder="Select your Industry" arrayelements={industries} name="industry"/>
+
+                                <Separator className="mt-5 mb-3"/>
+                                <div className="flex items-center gap-2">
+                                    <Layers />
+                                    <span className="font-semibold text-xl">Logo Preferences</span>
+                                </div>
+
+                                <div className="flex items-start space-x-3 space-y-0 mt-3">
+                                    <Checkbox onCheckedChange={() => {setLogoDetails(prev => ({...prev, includeBrandOrText: !prev.includeBrandOrText}))}}/>
+                                    <div className="space-y-1 leading-none">
+                                        <h2 className="font-semibold">Include Text/Company Name</h2>
+                                        <p className="text-sm text-muted-foreground">Include your brand name in the logo design</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start space-x-3 space-y-0 mt-3">
+                                    <Checkbox onCheckedChange={() => {setLogoDetails(prev => ({...prev, includeIcons: !prev.includeIcons}))}}/>
+                                    <div className="space-y-1 leading-none">
+                                        <h2 className="font-semibold">Include Icon/Symbol</h2>
+                                        <p className="text-sm text-muted-foreground">Include a graphic element or icon in the logo</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-5 border border-gray-600 border-1 rounded-md">
+                            <div className="flex items-center gap-2">
+                                <Palette />{" "}
+                                <span className="font-semibold text-xl">Design Preferences</span>
+                            </div>
+                            <p className="text-muted-foreground">
+                                Choose the visual style for your logo
+                            </p>
+                            <div>
+                                <SelectElement value={logoDetails.logoStyle} setLogoDetails={setLogoDetails} label="Logo Style" placeholder="Select a Logo Style" arrayelements={logoStyles} name="logoStyle"/>
+                                <ColorPalette setLogoDetails={setLogoDetails} name="colorPalette" value={logoDetails.colorPalette}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="my-5 flex justify-center">
+                        <Button onClick={handleGenerateLogo}>Generate Logo</Button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }

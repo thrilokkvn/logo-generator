@@ -62,7 +62,7 @@ export async function POST(req: Request) {
         4.  **If "Include Brand Name in Logo" is "Yes"**:
             * Immediately after the opening, add: "The brand name '${title}' is incorporated with [suggest appropriate typography style, e.g., sleek sans-serif, elegant serif, bold modern] typography."
             * Specify a typography style that complements the 'Logo Style'.
-        5.  **DO NOT** include the industry name in the logo
+        5.  **DO NOT** include the industry name in the logo, only include brand name if *Include Brand Name in Logo* is "Yes"
         6.  **If "Include Icons in Logo" is "Yes"**:
             * Add a description of a specific, relevant, and visually appropriate icon based on the 'Industry' and 'Brand Description'. Be creative but relevant. For example: "The design features a stylized abstract representation of interconnected data nodes." or "The design features an elegant intertwining of a leaf and water droplet."
             * If "Include Brand Name in Logo" is also "Yes", ensure the icon complements the typography.
@@ -137,22 +137,20 @@ export async function POST(req: Request) {
             id: data.id,
             user_id: user.user?.id,
             title,
+            description,
             industry,
-            created_at: new Date().toISOString(),
-            logo_url: `${process.env.SUPABASE_URL}/storage/v1/object/public/logos/public${filename}`,
-            logo_style: logoStyle
+            created_at: new Date(),
+            logo_url: `${process.env.SUPABASE_URL}/storage/v1/object/public/logos/public/${filename}`,
+            logo_style: logoStyle,
+            color_palette: colorPalette,
+            include_brand_or_text: includeBrandOrText,
+            include_icons: includeIcons
         })
 
         console.log(data);
-        if (insertError) return Response.json({ error: insertError.message }, { status: 500 });
+        if (insertError) return Response.json({ error: insertError?.message }, { status: 500 });
 
-        return new NextResponse(imageBuffer, {
-            headers: {
-                'Content-Type': mimeType || 'image/jpeg',
-                'Content-Disposition': 'inline; filename="generated-logo.jpg"',
-            },
-            status: 200,
-        });
+        return NextResponse.json({id: data.id}, {status: 200});
 
     } catch (error: any) {
         console.error('Error generating logo:', error);

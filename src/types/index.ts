@@ -18,8 +18,19 @@ export interface logoDetails {
 export interface logoDisplayType {
     id: string,
     title: string,
+    description: string,
     industry: string,
     createdAt: Date,
     logoUrl: string,
-    logoStyle: string   
+    logoStyle: string,
+    includeBrandOrText: boolean,
+    includeIcons: boolean,
+    colorPalette: string
+}
+
+export interface userType {
+    email: string,
+    firstName: string,
+    lastName: string,
+    registeredAt: Date
 }

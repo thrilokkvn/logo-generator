@@ -43,25 +43,12 @@ export const Hero = () => {
             Start Creating Free
             <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            onClick={() => {}}
-            className="border-primary/30 text-foreground hover:bg-primary/10 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full backdrop-blur-sm w-full sm:w-auto"
-          >
-            View Examples
-            <Zap className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
-          </Button>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-8 text-muted-foreground text-xs sm:text-sm">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
             <span>No Credit Card Required</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-            <span>10,000+ Logos Created</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
