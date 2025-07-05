@@ -23,7 +23,9 @@ export const config = {
     "/generate/:path*",     
     "/logos",
     "/logos/:path",
+    "/profile",
     "/api/generate-logo/:path*",
     "/api/logout",
+    "/api/logo/:path",
   ],
 };

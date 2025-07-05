@@ -17,10 +17,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Separator } from "./ui/separator";
+import { Credits } from "./Credits";
 
 export const Header = () => {
     const [user, setUser] = useState<User | null>(null);
+    const [credits, setCredits] = useState(0);
+
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -33,8 +35,9 @@ export const Header = () => {
     const getSession = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:3000/api/auth/session"
+                "/api/auth/session"
             );
+
             setUser(response.data.user);
             console.log(response);
         } catch (e: any) {
@@ -42,9 +45,30 @@ export const Header = () => {
         }
     };
 
+    const getCredits = async() => {
+        try {
+            const response = await axios.get("/api/user/credits");
+
+            if (!response.data.credits) {
+                return;
+            }
+
+            sessionStorage.setItem("credits", response.data.credits[0].points);
+            setCredits(response.data.credits[0].points);
+        } catch (e: any) {
+            toast.error(e.message);
+        }
+    }
+
     useEffect(() => {
+        const storedCredits = sessionStorage.getItem("credits");
+        if (storedCredits) setCredits(Number(storedCredits));
         getSession();
     }, []);
+
+    useEffect(() => {
+        getCredits();
+    }, [pathname])
 
     const handleLogout = async () => {
         try {
@@ -101,6 +125,7 @@ export const Header = () => {
                     )}
 
                     <div className="hidden md:flex items-center space-x-4">
+                        {user && <Credits credits={credits}/>}
                         <ThemeToggle />
                         {user === null && (
                             <div className="flex space-x-4">

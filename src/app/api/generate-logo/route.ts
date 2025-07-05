@@ -27,6 +27,18 @@ function extractImageFromResponse(response: GenerateContentResponse) {
 
 export async function POST(req: Request) {
     try {
+        const token = (await cookies()).get("sb-access-token")?.value;
+
+        if(!token) {
+            return NextResponse.json({message: "No user found"}, {status: 401});
+        }
+
+        const {data:user, error: userError} = await supabaseServer.auth.getUser(token);
+
+        if (userError) {
+            return NextResponse.json({message: userError.message}, {status: userError.status});
+        }        
+
         const { title, description, industry, logoStyle, colorPalette, includeBrandOrText, includeIcons } = await req.json();
         const promptGenerationInput = `
         You are an expert AI specialized in crafting highly effective text prompts for image generation AI models, specifically for logo design.
@@ -120,8 +132,6 @@ export async function POST(req: Request) {
             console.log("No image found")
         }
 
-        const token = (await cookies()).get("sb-access-token")?.value;
-        const {data:user, error: userError} = await supabaseServer.auth.getUser(token);
 
         const imageBuffer = Buffer.from(imageData as string, 'base64');
         const filename = `${title}-${industry}-${Math.random()}`;
@@ -149,6 +159,21 @@ export async function POST(req: Request) {
 
         console.log(data);
         if (insertError) return Response.json({ error: insertError?.message }, { status: 500 });
+
+        const {data: fetchCredits, error: fetchCreditsErr} = await supabaseServer.from("users").select("points").eq("id", user.user.id).single();
+
+        if (fetchCreditsErr) {
+            return NextResponse.json({message: "Something went wrong"}, {status: 200});
+        }
+
+        const points = fetchCredits.points;
+        const updatedPoints = Math.max(0, points - 5);
+
+        const {data: credits, error: creditsErr} = await supabaseServer.from("users").update({points: updatedPoints}).eq("id", user.user.id);
+
+        if (creditsErr) {
+            return NextResponse.json({message: "Something went wrong"}, {status: 200});
+        }
 
         return NextResponse.json({id: data.id}, {status: 200});
 

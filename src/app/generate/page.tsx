@@ -15,6 +15,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { MultiStepLoader } from "@/components/ui/multi-step-loader";
+import { Toaster } from "@/components/ui/sonner";
 
 const initialState = {
     title: "",
@@ -30,6 +31,7 @@ export default function GenerateLogo() {
     const [logoDetails, setLogoDetails] = useState<logoDetails>(initialState);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const credits = sessionStorage.getItem("credits") || "0";
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const name = e.target.name;
@@ -40,6 +42,14 @@ export default function GenerateLogo() {
     };
 
     const handleGenerateLogo = async() => {
+        if (parseInt(credits) < 5) {
+            toast.warning("Insufficient Credits", {
+                description: "You don't have enough credits to generate a logo"
+            });
+
+            return;
+        }
+        
         //zod validations
 
         try {
@@ -175,6 +185,7 @@ export default function GenerateLogo() {
                         <Button onClick={handleGenerateLogo}>Generate Logo</Button>
                     </div>
                 </div>
+                <Toaster richColors/>
             </div>
         );
     }
