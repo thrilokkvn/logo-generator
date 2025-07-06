@@ -12,6 +12,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { BeatLoader } from "react-spinners"
+import { signInSchema, signUpSchema } from "@/config/schema";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 const defaultAuthData = {
     firstName: "",
@@ -25,6 +27,7 @@ export default function Auth() {
     const [formData, setFormData] = useState<authData>(defaultAuthData);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState<authData>(defaultAuthData);
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -53,7 +56,13 @@ export default function Auth() {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post(`http://localhost:3000/api/auth/${authPage}`, formData, {
+            if (authPage === "signin") {
+              await signInSchema.validate(formData, {abortEarly: false});
+            } else {
+              await signUpSchema.validate(formData, {abortEarly: false});
+            }
+
+            const response = await axios.post(`/api/auth/${authPage}`, formData, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -69,7 +78,20 @@ export default function Auth() {
                 window.location.href="/";
             }
         } catch(error: any) {
-            toast.error("Error Signing in...")
+            const newErrors:any = {};
+
+            error.inner?.forEach((err:any)=>{
+                newErrors[err.path] = err.message
+            })
+
+            setErrors(newErrors);
+
+            if (Object.keys(newErrors).length === 0) {
+              toast.error(error.response.data.message);
+            } else {
+              toast.error("Invalid Inputs");
+            }
+
         } finally {
           setLoading(false);
         }
@@ -105,6 +127,7 @@ export default function Auth() {
                   onChange={(e) => setFormData(prev => ({...prev, firstName: e.target.value}))}
                   required
                 />
+                {errors.firstName !== "" && <ErrorMessage message={errors.firstName}/>}
               </div>
               
               <div className="space-y-2">
@@ -117,6 +140,7 @@ export default function Auth() {
                   onChange={(e) => setFormData(prev => ({...prev, lastName: e.target.value}))}
                   required
                 />
+                {errors.lastName !== "" && <ErrorMessage message={errors.lastName}/>}
               </div>
             </div>}
 
@@ -130,6 +154,7 @@ export default function Auth() {
                 onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
                 required
               />
+              {errors.email !== "" && <ErrorMessage message={errors.email}/>}
             </div>
             
             <div className="space-y-2">
@@ -155,6 +180,7 @@ export default function Auth() {
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
+              {errors.password !== "" && <ErrorMessage message={errors.password}/>}
               </div>
             </div>
 

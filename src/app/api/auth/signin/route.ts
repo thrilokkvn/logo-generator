@@ -10,10 +10,8 @@ export async function POST(req: Request) {
 
     const {data, error} = await supabaseServer.auth.signInWithPassword({email, password});
 
-    console.log(data)
-
     if (error || !data.session) {
-        return NextResponse.json({error: "Invalid Credentials"}, {status: 401});
+        return NextResponse.json({error: error?.message}, {status: 401});
     }
 
     const res = NextResponse.json({user: data.user}, {status: 201});

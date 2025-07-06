@@ -34,13 +34,15 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: error?.message || "Signup failed" }, { status: 400 });
     }
 
+    const currentDate = new Date().toISOString();
     const insertUser = await supabaseServer.from("users").insert({
         id: data.user?.id,
         email,
         first_name: firstName,
         last_name: lastName,
         points: 5,
-        registered_at: new Date().toISOString()
+        registered_at: currentDate,
+        last_points_reset: currentDate
     })
 
     if (insertUser.error) {

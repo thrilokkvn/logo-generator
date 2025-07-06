@@ -34,10 +34,7 @@ export const Header = () => {
 
     const getSession = async () => {
         try {
-            const response = await axios.get(
-                "/api/auth/session"
-            );
-
+            const response = await axios.get("/api/auth/session");
             setUser(response.data.user);
             console.log(response);
         } catch (e: any) {
@@ -56,7 +53,7 @@ export const Header = () => {
             sessionStorage.setItem("credits", response.data.credits[0].points);
             setCredits(response.data.credits[0].points);
         } catch (e: any) {
-            toast.error(e.message);
+            if(user) toast.error(e.message);
         }
     }
 
@@ -67,12 +64,14 @@ export const Header = () => {
     }, []);
 
     useEffect(() => {
-        getCredits();
+        if(user) {
+            getCredits();
+        }
     }, [pathname])
 
     const handleLogout = async () => {
         try {
-            await axios.post("http://localhost:3000/api/auth/logout");
+            await axios.post("/api/auth/logout");
             toast.success("Logout Successful");
             router.replace("/");
         } catch (e) {

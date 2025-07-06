@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import {Analytics} from "@vercel/analytics/react"
 
 const host_grotesk = Host_Grotesk({
   subsets: ["latin"]
@@ -27,6 +28,7 @@ export default function RootLayout({
         >
           <Header />
           {children}
+          <Analytics />
           <Footer />
         </body>
       </ThemeProvider>
