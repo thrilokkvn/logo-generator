@@ -1,7 +1,11 @@
 import { supabaseServer } from "@/config/supabaseServer";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+        return NextResponse.json({ error: "Unauthorized" },{ status: 401 });
+    }
+
     const now = new Date();
     const oneMonthAgo = new Date();
 
