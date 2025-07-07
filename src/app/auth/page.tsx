@@ -87,7 +87,7 @@ export default function Auth() {
             setErrors(newErrors);
 
             if (Object.keys(newErrors).length === 0) {
-              toast.error(error.response.data.message);
+              toast.error(error.response.data.error);
             } else {
               toast.error("Invalid Inputs");
             }
