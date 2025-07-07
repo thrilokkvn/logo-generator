@@ -95,8 +95,6 @@ export async function POST(req: Request) {
         });
         const generatedPromptText = generatedPrompt.text;
 
-        console.log(generatedPromptText)
-
         const imageGenerationResult = await genAI.models.generateContent({
             model: process.env.GEMINI_IMAGE_MODEL as string,
             contents: [{ role: "user", parts: [{ text: generatedPromptText }] }],
@@ -125,14 +123,6 @@ export async function POST(req: Request) {
 
         const {imageData, mimeType} = extractImageFromResponse(imageGenerationResult);
 
-        if (imageData && mimeType) {
-            console.log("Image extracted successfully");
-            console.log("MIME type", mimeType);
-        } else {
-            console.log("No image found")
-        }
-
-
         const imageBuffer = Buffer.from(imageData as string, 'base64');
         const filename = `${title}-${industry}-${Math.random()}`;
 
@@ -157,7 +147,6 @@ export async function POST(req: Request) {
             include_icons: includeIcons
         })
 
-        console.log(data);
         if (insertError) return Response.json({ error: insertError?.message }, { status: 500 });
 
         const {data: fetchCredits, error: fetchCreditsErr} = await supabaseServer.from("users").select("points").eq("id", user.user.id).single();
@@ -178,7 +167,6 @@ export async function POST(req: Request) {
         return NextResponse.json({id: data.id}, {status: 200});
 
     } catch (error: any) {
-        console.error('Error generating logo:', error);
         return NextResponse.json(
             { error: 'Failed to generate logo', details: error.message },
             { status: 500 }

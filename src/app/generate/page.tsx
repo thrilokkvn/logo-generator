@@ -16,6 +16,8 @@ import axios from "axios";
 import { toast } from "sonner";
 import { MultiStepLoader } from "@/components/ui/multi-step-loader";
 import { Toaster } from "@/components/ui/sonner";
+import { logoSchema } from "@/config/schema";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 const initialState = {
     title: "",
@@ -29,6 +31,7 @@ const initialState = {
 
 export default function GenerateLogo() {
     const [logoDetails, setLogoDetails] = useState<logoDetails>(initialState);
+    const [errors, setErrors] = useState({title: "", description: "", industry: "", logoStyle: "", colorPalette: ""});
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const credits = sessionStorage.getItem("credits") || "0";
@@ -50,11 +53,11 @@ export default function GenerateLogo() {
             return;
         }
         
-        //zod validations
 
         try {
+            await logoSchema.validate(logoDetails, {abortEarly: false});
             setLoading(true);
-            const response = await axios.post("http://localhost:3000/api/generate-logo", 
+            const response = await axios.post("/api/generate-logo", 
                 logoDetails, 
                 {
                     headers: {
@@ -70,8 +73,20 @@ export default function GenerateLogo() {
             const id = response.data.id;
             toast.success("Logo Generated Successfully")
             router.push(`/logos/${id}`);
-        } catch (e) {
-            toast.error("Error Generating Logo...")
+        } catch (error: any) {
+            const newErrors:any = {};
+
+            error.inner?.forEach((err:any)=>{
+                newErrors[err.path] = err.message
+            })
+
+            setErrors(newErrors);
+
+            if (Object.keys(newErrors).length === 0) {
+              toast.error(error.response.data.message);
+            } else {
+              toast.error("Error generating logo...");
+            }
         } finally {
             setLoading(false);
         }
@@ -131,6 +146,7 @@ export default function GenerateLogo() {
                                     onChange={handleInputChange}
                                     value={logoDetails.title}
                                 />
+                                {errors.title !== "" && <ErrorMessage message={errors.title}/>}
                                 <CustomTextarea
                                     id="brand-description"
                                     title="Brand Description"
@@ -139,10 +155,13 @@ export default function GenerateLogo() {
                                     onChange={handleInputChange}
                                     value={logoDetails.description}
                                 />
+                                {errors.description !== "" && <ErrorMessage message={errors.description}/>}
                                 <p className="text-muted-foreground text-sm">
                                     Be specific about your brand's personality and target audience
                                 </p>
+
                                 <SelectElement value={logoDetails.industry} setLogoDetails={setLogoDetails} label="Industry" placeholder="Select your Industry" arrayelements={industries} name="industry"/>
+                                {errors.industry !== "" && <ErrorMessage message={errors.industry}/>}
 
                                 <Separator className="mt-5 mb-3"/>
                                 <div className="flex items-center gap-2">
@@ -177,7 +196,8 @@ export default function GenerateLogo() {
                             </p>
                             <div>
                                 <SelectElement value={logoDetails.logoStyle} setLogoDetails={setLogoDetails} label="Logo Style" placeholder="Select a Logo Style" arrayelements={logoStyles} name="logoStyle"/>
-                                <ColorPalette setLogoDetails={setLogoDetails} name="colorPalette" value={logoDetails.colorPalette}/>
+                                {errors.logoStyle !== "" && <ErrorMessage message={errors.logoStyle}/>}
+                                <ColorPalette setLogoDetails={setLogoDetails} name="colorPalette" value={logoDetails.colorPalette} error={errors.colorPalette}/>
                             </div>
                         </div>
                     </div>

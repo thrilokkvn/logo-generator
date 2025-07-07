@@ -33,7 +33,7 @@ export default function Auth() {
 
     useEffect(() => {
       const getSession = async() => {
-        const response = await axios.get("http://localhost:3000/api/auth/session");
+        const response = await axios.get("/api/auth/session");
         const data = response.data;
 
         if (data.user !== null) {

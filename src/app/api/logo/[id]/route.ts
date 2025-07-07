@@ -17,5 +17,9 @@ export async function GET(req: NextRequest, {params}: {params: {id: string}}) {
         return NextResponse.json({error: "Error fetching logo"}, {status: 500});
     }
 
+    if (data.length === 0) {
+        return NextResponse.json({error: "Invalid User"}, {status: 401});
+    }
+
     return NextResponse.json(data);
 }

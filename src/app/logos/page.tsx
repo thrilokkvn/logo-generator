@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { industries } from "@/config/config";
 import { logoDisplayType } from "@/types";
 import axios from "axios";
-import { Plus, Search } from "lucide-react";
+import { ArrowRight, Plus, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -20,7 +20,7 @@ export default function Logos() {
 
     const getLogos = async() => {
         try {
-            const response = await axios.get("http://localhost:3000/api/logo");
+            const response = await axios.get("/api/logo");
             if (response.status < 200 || response.status > 299) {
                 toast.error("Error fetching Logos");
                 return;
@@ -76,30 +76,52 @@ export default function Logos() {
                     <Search className="absolute top-2 right-2 p-1" />
                 </div>
 
-                <div className="mt-3 flex-[2]">
-                    <Select
-                        onValueChange={(val) => setSelectedFilter(val)}
-                        value={selectedFilter}
-                    >
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Filter by Industry" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {industries.map((each, index) => (
-                                <SelectItem key={index} value={each}>
-                                    {each}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                <div className="mt-3 flex flex-[2] items-center gap-2">
+                <Select
+                    onValueChange={(val) => setSelectedFilter(val)}
+                    value={selectedFilter}
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Filter by Industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    {industries.map((each, index) => (
+                        <SelectItem key={index} value={each}>
+                            {each}
+                        </SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+
+                {selectedFilter && (
+                    <button
+                    type="button"
+                    onClick={() => setSelectedFilter("")}
+                    className="text-gray-500 hover:text-red-500 transition-colors"
+                    title="Clear filter">
+                        <X className="w-4 h-4" />
+                    </button>
+                )}
                 </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-5 px-8">
+            {filteredLogos.length > 0 && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-5 px-8">
                 {filteredLogos.map((each, index) => (
                     <LogoItem key={index} details={each}/>
                 ))}
-            </div>
+            </div>}
+
+            {logos.length === 0 && <div className="flex flex-col p-10 gap-3 justify-center items-center mx-auto">
+                <p className="text-md md:text-xl text-accent-foreground">You don't have any logos</p>
+                <Button onClick={() => router.push("/generate")} size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto">
+                    Create Logo
+                    <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+                </Button>
+            </div>}
+
+            {(logos.length > 0 && filteredLogos.length === 0) && <div className="flex justidy-center items-center mx-auto p-10">
+                <p className="text-md md:text-xl text-muted-foreground">No Logos matching the filters</p>
+            </div>}
         </div>
     )
 }

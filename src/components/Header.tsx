@@ -36,7 +36,6 @@ export const Header = () => {
         try {
             const response = await axios.get("/api/auth/session");
             setUser(response.data.user);
-            console.log(response);
         } catch (e: any) {
             toast.error(e.message);
         }
@@ -65,13 +64,15 @@ export const Header = () => {
 
     useEffect(() => {
         if(user) {
+            console.log("Get credits")
             getCredits();
         }
-    }, [pathname])
+    }, [pathname, user])
 
     const handleLogout = async () => {
         try {
             await axios.post("/api/auth/logout");
+            sessionStorage.removeItem("credits");
             toast.success("Logout Successful");
             router.replace("/");
         } catch (e) {
@@ -112,6 +113,13 @@ export const Header = () => {
                                 className="text-foreground hover:text-primary font-medium transition-colors"
                             >
                                 How It Works
+                            </Button>
+                            <Button
+                                variant={"ghost"}
+                                onClick={() => scrollToSection("faq")}
+                                className="text-foreground hover:text-primary font-medium transition-colors"
+                            >
+                                FAQs
                             </Button>
                             <Button
                                 variant={"ghost"}

@@ -3,11 +3,13 @@ import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { SetStateAction } from "react";
 import { logoDetails } from "@/types";
+import { ErrorMessage } from "./ErrorMessage";
 
-export const ColorPalette = ({setLogoDetails, name, value} : {setLogoDetails: React.Dispatch<SetStateAction<logoDetails>>, name: string, value: string}) => {
+export const ColorPalette = ({setLogoDetails, name, value, error} : {setLogoDetails: React.Dispatch<SetStateAction<logoDetails>>, name: string, value: string, error: string}) => {
     return (
         <div className="flex flex-col items-start gap-3 mt-5">
-            <Label className="font-semibold">Color Palette</Label>
+            <Label className="font-semibold mb-0 pb-0">Color Palette</Label>
+            {error !== "" && <ErrorMessage message={error}/>}
             <RadioGroup className="space-y-3" onValueChange={(val) => {
                 setLogoDetails((prev) => ({
                     ...prev,

@@ -18,7 +18,7 @@ export default function Profile() {
         const getUserDetails = async() => {
             try {
                 setLoading(true);
-                const response = await axios.get("http://localhost:3000/api/user");
+                const response = await axios.get("/api/user");
                 if (response.status < 200 || response.status > 299) {
                     toast.error("Unable to fetch the User Details");
                     return;

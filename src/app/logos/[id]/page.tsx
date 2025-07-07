@@ -3,30 +3,28 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Toaster } from "@/components/ui/sonner";
 import { colorPalettes } from "@/config/config";
 import { logoDisplayType } from "@/types";
 import axios from "axios";
 import { Copy, Download, Share2 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HashLoader } from "react-spinners";
 import { toast } from "sonner";
 
 export default function Logo() {
-    const [logoDetails, setLogoDetails] = useState<logoDisplayType | null>(
-        null
-    );
+    const [logoDetails, setLogoDetails] = useState<logoDisplayType | null>(null);
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const { id } = useParams();
+    const router = useRouter();
 
     useEffect(() => {
         const getLogoDetails = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(
-                    `http://localhost:3000/api/logo/${id}`
-                );
+                const response = await axios.get(`/api/logo/${id}`);
 
                 if (response.status < 200 || response.status > 299) {
                     toast.error("Error fetching logo details");
@@ -48,10 +46,10 @@ export default function Logo() {
                     logoUrl: details.logo_url,
                 };
 
-                console.log(formattedLogoData);
                 setLogoDetails(formattedLogoData);
             } catch (e: any) {
-                toast.error(e.message || "Error fetching logo details");
+                toast.error(e.response.data.error || "Error fetching logo details");
+                router.replace("/")
             } finally {
                 setLoading(false);
             }
@@ -63,7 +61,8 @@ export default function Logo() {
     if (loading || !logoDetails) {
         return (
             <div className="min-h-screen flex justify-center items-center">
-                <HashLoader className="text-foreground" />
+                <HashLoader color="oklch(49.6% 0.265 301.924)" />
+                <Toaster richColors/>
             </div>
         );
     }
@@ -103,7 +102,6 @@ export default function Logo() {
 
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            console.error("Download failed", error);
             toast.error("Download failed");
         }
     };
@@ -250,6 +248,7 @@ export default function Logo() {
                         </div>
                     </div>
                 </div>
+                <Toaster richColors/>
             </div>
         );
     }

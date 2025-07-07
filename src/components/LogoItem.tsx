@@ -35,7 +35,6 @@ export const LogoItem = ({details}:{details: logoDisplayType}) => {
 
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            console.error("Download failed", error);
             toast.error("Download failed");
         }
     };
