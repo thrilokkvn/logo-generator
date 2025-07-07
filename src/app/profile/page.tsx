@@ -35,7 +35,7 @@ export default function Profile() {
 
                 setUser(formattedUserData);
             } catch (e) {
-                toast.error("Unable to fetch the User Details");
+                if(e) toast.error("Unable to fetch the User Details");
             } finally {
                 setLoading(false);
             }
@@ -99,8 +99,8 @@ export default function Profile() {
 
     if (loading || !user) {
         return (
-            <div className="min-h-full flex justify-center items-center">
-                <HashLoader className="text-foreground" />
+            <div className="min-h-screen flex justify-center items-center">
+                <HashLoader color="oklch(49.6% 0.265 301.924)" />
             </div>
         );
     }

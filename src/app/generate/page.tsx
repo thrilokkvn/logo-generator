@@ -34,7 +34,11 @@ export default function GenerateLogo() {
     const [errors, setErrors] = useState({title: "", description: "", industry: "", logoStyle: "", colorPalette: ""});
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const credits = sessionStorage.getItem("credits") || "0";
+    let credits = "0";
+
+    if (typeof window !== "undefined") {
+        credits = sessionStorage.getItem("credits") || "0";
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const name = e.target.name;
@@ -125,7 +129,7 @@ export default function GenerateLogo() {
                         Create your Logo
                     </h1>
                     <p className="font-semibold text-lg text-muted-foreground mt-1">
-                        Tell us about your brand and we'll create the perfect logo for you
+                        Tell us about your brand and we&apos;ll create the perfect logo for you
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                         <div className="p-5 border border-gray-600 border-1 rounded-md">
@@ -157,7 +161,7 @@ export default function GenerateLogo() {
                                 />
                                 {errors.description !== "" && <ErrorMessage message={errors.description}/>}
                                 <p className="text-muted-foreground text-sm">
-                                    Be specific about your brand's personality and target audience
+                                    Be specific about your brand&apos;s personality and target audience
                                 </p>
 
                                 <SelectElement value={logoDetails.industry} setLogoDetails={setLogoDetails} label="Industry" placeholder="Select your Industry" arrayelements={industries} name="industry"/>

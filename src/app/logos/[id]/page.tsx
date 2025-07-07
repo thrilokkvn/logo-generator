@@ -56,7 +56,7 @@ export default function Logo() {
         };
 
         getLogoDetails();
-    }, [id]);
+    }, [id, router]);
 
     if (loading || !logoDetails) {
         return (
@@ -102,7 +102,7 @@ export default function Logo() {
 
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            toast.error("Download failed");
+            if(error) toast.error("Download failed");
         }
     };
 
@@ -114,7 +114,7 @@ export default function Logo() {
                     url: logoDetails.logoUrl,
                 });
             } catch (error) {
-                toast.error("Share cancelled");
+                if(error) toast.error("Share cancelled");
             }
         } else {
             toast.error("Sharing not supported on this browser");

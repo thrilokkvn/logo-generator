@@ -43,7 +43,7 @@ export default function Auth() {
       }
 
       getSession();
-    }, [])
+    }, [router])
 
     useEffect(() => {
       const message = searchParams.get("message");

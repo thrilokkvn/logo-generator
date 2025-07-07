@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Sparkles, Zap } from "lucide-react"
+import { ArrowRight, Sparkles } from "lucide-react"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"

@@ -1,4 +1,3 @@
-import { logoStyles } from "@/config/config";
 import { Badge } from "./ui/badge";
 
 export const LogoStyleBadge = ({ logoStyle }: { logoStyle: string }) => {

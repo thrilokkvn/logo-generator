@@ -34,3 +34,20 @@ export interface userType {
     lastName: string,
     registeredAt: Date
 }
+
+export type ValidationErrorItem = {
+  path?: string;
+  message?: string;
+};
+
+export type ValidationError = {
+  inner?: ValidationErrorItem[];
+};
+
+export type ApiError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};

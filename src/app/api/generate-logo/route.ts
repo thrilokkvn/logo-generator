@@ -1,6 +1,6 @@
 import { genAI } from "@/config/genAI";
 import { NextResponse } from "next/server";
-import { HarmBlockThreshold, HarmCategory, Part } from "@google/generative-ai"
+import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai"
 import { GenerateContentResponse, Modality } from "@google/genai";
 import { supabaseServer } from "@/config/supabaseServer";
 import { cookies } from "next/headers";
@@ -133,7 +133,7 @@ export async function POST(req: Request) {
 
         if (error) return Response.json({ error: error.message }, { status: 500 });
 
-        const {data: insertData, error: insertError} = await supabaseServer.from("logos").insert({
+        const {error: insertError} = await supabaseServer.from("logos").insert({
             id: data.id,
             user_id: user.user?.id,
             title,
@@ -158,7 +158,7 @@ export async function POST(req: Request) {
         const points = fetchCredits.points;
         const updatedPoints = Math.max(0, points - 5);
 
-        const {data: credits, error: creditsErr} = await supabaseServer.from("users").update({points: updatedPoints}).eq("id", user.user.id);
+        const {error: creditsErr} = await supabaseServer.from("users").update({points: updatedPoints}).eq("id", user.user.id);
 
         if (creditsErr) {
             return NextResponse.json({message: "Something went wrong"}, {status: 200});

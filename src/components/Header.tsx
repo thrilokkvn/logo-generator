@@ -41,21 +41,6 @@ export const Header = () => {
         }
     };
 
-    const getCredits = async() => {
-        try {
-            const response = await axios.get("/api/user/credits");
-
-            if (!response.data.credits) {
-                return;
-            }
-
-            sessionStorage.setItem("credits", response.data.credits[0].points);
-            setCredits(response.data.credits[0].points);
-        } catch (e: any) {
-            if(user) toast.error(e.message);
-        }
-    }
-
     useEffect(() => {
         const storedCredits = sessionStorage.getItem("credits");
         if (storedCredits) setCredits(Number(storedCredits));
@@ -63,6 +48,21 @@ export const Header = () => {
     }, []);
 
     useEffect(() => {
+        const getCredits = async() => {
+            try {
+                const response = await axios.get("/api/user/credits");
+
+                if (!response.data.credits) {
+                    return;
+                }
+
+                sessionStorage.setItem("credits", response.data.credits[0].points);
+                setCredits(response.data.credits[0].points);
+            } catch (e: any) {
+                if(user) toast.error(e.message);
+            }
+        }
+
         if(user) {
             console.log("Get credits")
             getCredits();
@@ -76,7 +76,7 @@ export const Header = () => {
             toast.success("Logout Successful");
             router.replace("/");
         } catch (e) {
-            toast.error("Logout failed");
+            if(e) toast.error("Logout failed");
         }
 
         getSession();

@@ -27,9 +27,8 @@ export default function Logos() {
             }
 
             const logoData = response.data;
-            let formattedLogoData: logoDisplayType[];
 
-            formattedLogoData = logoData.map((each: any) => ({
+            const formattedLogoData = logoData.map((each: any) => ({
                 createdAt: each.created_at,
                 id: each.id,
                 industry: each.industry,
@@ -112,7 +111,7 @@ export default function Logos() {
             </div>}
 
             {logos.length === 0 && <div className="flex flex-col p-10 gap-3 justify-center items-center mx-auto">
-                <p className="text-md md:text-xl text-accent-foreground">You don't have any logos</p>
+                <p className="text-md md:text-xl text-accent-foreground">You don&apos;t have any logos</p>
                 <Button onClick={() => router.push("/generate")} size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto">
                     Create Logo
                     <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />

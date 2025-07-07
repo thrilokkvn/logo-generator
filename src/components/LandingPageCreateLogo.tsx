@@ -1,7 +1,12 @@
-import { ArrowRight, Sparkles } from "lucide-react"
+"use client";
+
+import { ArrowRight } from "lucide-react"
 import { Button } from "./ui/button"
+import { useRouter } from "next/navigation";
 
 export const LandingPageCreateLogo = () => {
+  const router = useRouter();
+
   return (
     <section className="py-24 bg-gradient-to-br from-primary/10 via-background to-muted relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
@@ -18,12 +23,12 @@ export const LandingPageCreateLogo = () => {
         </h2>
 
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-          Join thousands of businesses who've already transformed their brand with LogoForge AI.
+          Join thousands of businesses who&apos;ve already transformed their brand with LogoLumeo.
           Start your free trial today and see the difference professional AI design can make.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-          <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-10 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <Button onClick={() => router.push("/generate")} size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-10 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
             Get Started
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>

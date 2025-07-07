@@ -34,7 +34,7 @@ export const Faq = () => {
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Questions</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Got questions? We've got answers. Here are the most common questions about LogoLumeo.
+            Got questions? We&apos;ve got answers. Here are the most common questions about LogoLumeo.
           </p>
         </div>
 
