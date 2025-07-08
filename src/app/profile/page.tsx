@@ -108,7 +108,7 @@ export default function Profile() {
 
     if (!loading && user) {
         return (
-        <div className="flex flex-col min-h-full justify-center items-center mt-12 md:mt-24 mb-24">
+        <div className="flex flex-col min-h-full justify-center items-center mt-24 mb-24">
             <h1 className="font-bold md:text-4xl mb-10 text-2xl">
                 User Details
             </h1>
