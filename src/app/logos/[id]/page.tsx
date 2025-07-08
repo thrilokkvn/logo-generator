@@ -61,7 +61,7 @@ export default function Logo() {
     if (loading || !logoDetails) {
         return (
             <div className="min-h-screen flex justify-center items-center">
-                <HashLoader color="oklch(49.6% 0.265 301.924)" />
+                <HashLoader color="rgba(115, 17, 242, 1)" />
                 <Toaster richColors/>
             </div>
         );

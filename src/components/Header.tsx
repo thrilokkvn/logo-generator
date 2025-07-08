@@ -215,7 +215,7 @@ export const Header = () => {
                                         My Account
                                     </DropdownMenuLabel>
                                 )}
-                                <DropdownMenuSeparator />
+                                {user && <DropdownMenuSeparator />}
                                 {user && (
                                     <DropdownMenuItem onClick={() => router.push("/profile")} className="cursor-pointer">
                                         Profile
@@ -245,6 +245,15 @@ export const Header = () => {
                                         }
                                     >
                                         How It Works
+                                    </DropdownMenuItem>
+                                )}
+                                {!user && (
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            scrollToSection("faq")
+                                        }
+                                    >
+                                        FAQs
                                     </DropdownMenuItem>
                                 )}
 

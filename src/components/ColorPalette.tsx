@@ -19,7 +19,7 @@ export const ColorPalette = ({setLogoDetails, name, value, error} : {setLogoDeta
             {colorPalettes.map((palette) => (
                 <div key={palette.name} className="flex items-center space-x-3">
                     <RadioGroupItem value={palette.name} id={palette.name.toLowerCase()}/>
-                    <Label htmlFor={palette.name.toLowerCase()} className="flex items-center space-x-3 cursor-pointer flex-1">
+                    <Label htmlFor={palette.name.toLowerCase()} className="flex flex-col lg:flex-row items-start md:items-center md:space-x-3 cursor-pointer flex-1">
                         <span className="font-medium text-sm min-w-[120px]">
                             {palette.name}
                         </span>

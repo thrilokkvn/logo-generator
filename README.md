@@ -1,36 +1,23 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LOGOLUMEO (Logo Generator)
 
-## Getting Started
+**LogoLumeo** is an AI-powered logo generator that helps you instantly create professional, unique logos based on your brand's identity and style. Whether you're a startup founder, designer, or entrepreneur, LogoLumeo makes logo design fast, easy, and affordable.
 
-First, run the development server:
+## Features:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **AI Powered Logo Generation**: Generate stunning logos using the power of advanced AI models.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Minimal Input, Maximum Impact**: No complex process - just fill in a short form and get your logo.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **User Dashboard**: Users get access to a dashboard that shows all previously generated logos at one place.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Download and Share**: Download your high quality logo in PNG or share it via a unique link.
 
-## Learn More
+- **Smart Credit Renewal**: Credits are automatically renewed monthly from your date of registration - **only if the user has 0 remaining credits**
 
-To learn more about Next.js, take a look at the following resources:
+## TECH STACK
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Frontend**: Next.js with TypeScript, TailwindCSS and ShadCN UI
+- **Backend**: Next.js
+- **Database**: PostgreSQL (Supabase)
+- **Image Generation**: Google Gemini
+- **Deployment**: Vercel
