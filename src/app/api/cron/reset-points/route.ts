@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    const {data: usersToReset, error} = await supabaseServer.from("users").select("id, points, last_reset_date").lt("points", 5).lt("last_reset_date", oneMonthAgo.toISOString());
+    const {data: usersToReset, error} = await supabaseServer.from("users").select("id, points, last_points_reset").lt("points", 5).lt("last_points_reset", oneMonthAgo.toISOString());
 
     if (error) {
         return NextResponse.json({message: "Error fetching users"}, {status: 500});
