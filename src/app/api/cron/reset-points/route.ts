@@ -11,11 +11,13 @@ export async function GET(req: NextRequest) {
 
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    const {data: usersToReset, error} = await supabaseServer.from("users").select("id, points, last_points_reset").lt("points", 5).lt("last_points_reset", oneMonthAgo.toISOString());
+    const {data: usersToReset, error} = await supabaseServer.from("users").select("id, points, last_points_reset").lt("points", 5).lt("last_points_reset", oneMonthAgo.toISOString().split("T")[0]);
 
     if (error) {
         return NextResponse.json({message: "Error fetching users"}, {status: 500});
     }
+
+    console.log(`users to reset: ${usersToReset}`)
 
     const updates = usersToReset.map(each => {
         supabaseServer.from("users").update({
